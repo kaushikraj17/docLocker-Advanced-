@@ -1,12 +1,30 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import {
   UserCircleIcon,
   ArrowLeftStartOnRectangleIcon,
 } from "@heroicons/react/24/outline";
+import { useRouter } from "next/navigation";
 
 const NavbarDashboard = () => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const router = useRouter();
+  const handleLogOut = async () => {
+    try {
+      const res = await fetch("/api/auth/logOut", {
+        method: "POST",
+      });
+      const result = await res.json();
+
+      if (result.success) {
+        router.push("/");
+      } else {
+        console.log("Logout failed:", result.message);
+      }
+    } catch (err) {
+      console.log("Logout error:", err);
+    }
+  };
   return (
     <>
       <div className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200">
@@ -38,7 +56,10 @@ const NavbarDashboard = () => {
                   <UserCircleIcon className="w-4 h-4" />
                   <span>Profile</span>
                 </button>
-                <button className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center space-x-2 border-t">
+                <button
+                  onClick={handleLogOut}
+                  className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center space-x-2 border-t"
+                >
                   <ArrowLeftStartOnRectangleIcon className="w-5 h-5" />
                   <span>Sign out</span>
                 </button>
